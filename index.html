@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg" sizes="16x16" href="images/favicon.svg" />
+    <title>Play25 Lottery</title>
+    <link
+      href="css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <script src="js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/bootstrap-icons.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind+Siliguri&amp;family=Poppins&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="css/animate.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="css/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style></style>
+  </head>
+
+  <body>
+    <style>
+      :root {
+        --atom-size: 180px;
+        --atom-color-hex: #ffee00;
+        --atom-color-rgb: 0, 216, 255;
+        --nucleus-size: calc(var(--atom-size) / 5);
+        --electron-color-hex: #e9e75f;
+        --electron-size: calc(var(--atom-size) / 25);
+        --electron-orbit-size: calc(var(--atom-size) / 2.5);
+        --electron-speed: 1.2s;
+        --electron-speed-alpha: 1s;
+        --electron-speed-omega: 0.8s;
+      }
+
+      #preloader-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* background: #1f1f1f; */
+        background: rgba(31, 31, 31, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .atom-container {
+        display: grid;
+        place-items: center;
+        box-sizing: border-box;
+      }
+
+      .atom {
+        position: relative;
+        width: var(--atom-size);
+        height: var(--atom-size);
+        animation: 8s atom infinite cubic-bezier(1, 0.25, 0, 0.75);
+      }
+
+      @keyframes atom {
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+
+        12.5% {
+          transform: rotate(-45deg) scale(0.9);
+        }
+
+        25% {
+          transform: rotate(-90deg) scale(1);
+        }
+
+        37.5% {
+          transform: rotate(-135deg) scale(0.9);
+        }
+
+        50% {
+          transform: rotate(-180deg) scale(1);
+        }
+
+        62.5% {
+          transform: rotate(-225deg) scale(0.9);
+        }
+
+        75% {
+          transform: rotate(-270deg) scale(1);
+        }
+
+        87.5% {
+          transform: rotate(-315deg) scale(0.9);
+        }
+
+        100% {
+          transform: rotate(-360deg) scale(1);
+        }
+      }
+
+      /* Nucleus */
+      .atom::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: var(--nucleus-size);
+        height: var(--nucleus-size);
+        margin-top: calc(var(--nucleus-size) / -2);
+        margin-left: calc(var(--nucleus-size) / -2);
+        background: var(--electron-color-hex);
+        /* var(--atom-color-hex); */
+        border-radius: 100%;
+        box-shadow: 0 0 3px 0 var(--atom-color-hex);
+        animation: 2s nucleus infinite cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      @keyframes nucleus {
+        0% {
+          transform: scale(1);
+        }
+
+        25% {
+          transform: scale(0.9);
+        }
+
+        50% {
+          transform: scale(1);
+        }
+
+        75% {
+          transform: scale(0.85);
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Electron Orbit */
+      .atom > [class^="electron"] {
+        border-top: solid rgba(var(--atom-color-rgb), 0.5) 1px;
+        border-right: solid rgba(var(--atom-color-rgb), 0.35) 2px;
+        border-bottom: solid rgba(var(--atom-color-rgb), 0.2) 4px;
+        border-left: solid rgba(var(--atom-color-rgb), 0) 2px;
+        border-radius: 100%;
+        width: 100%;
+        height: var(--electron-orbit-size);
+        position: absolute;
+        top: 50%;
+        margin-top: calc(var(--electron-orbit-size) / -2);
+        animation: var(--electron-speed) electron-orbit infinite linear;
+      }
+
+      .atom > .electron-alpha {
+        transform: rotate(60deg);
+        animation: var(--electron-speed-alpha) electron-orbit infinite linear;
+      }
+
+      .atom > .electron-omega {
+        transform: rotate(-60deg);
+        animation: var(--electron-speed-omega) electron-orbit infinite linear;
+      }
+
+      @keyframes electron-orbit {
+        0% {
+          border-top: solid rgba(var(--atom-color-rgb), 0.5) 1px;
+          border-right: solid rgba(var(--atom-color-rgb), 0.35) 2px;
+          border-bottom: solid rgba(var(--atom-color-rgb), 0.2) 4px;
+          border-left: solid rgba(var(--atom-color-rgb), 0) 2px;
+        }
+
+        25% {
+          border-top: solid rgba(var(--atom-color-rgb), 0.35) 1px;
+          border-right: solid rgba(var(--atom-color-rgb), 0.2) 2px;
+          border-bottom: solid rgba(var(--atom-color-rgb), 0) 4px;
+          border-left: solid rgba(var(--atom-color-rgb), 0.5) 2px;
+        }
+
+        50% {
+          border-top: solid rgba(var(--atom-color-rgb), 0.2) 1px;
+          border-right: solid rgba(var(--atom-color-rgb), 0) 2px;
+          border-bottom: solid rgba(var(--atom-color-rgb), 0.5) 4px;
+          border-left: solid rgba(var(--atom-color-rgb), 0.35) 2px;
+        }
+
+        75% {
+          border-top: solid rgba(var(--atom-color-rgb), 0) 1px;
+          border-right: solid rgba(var(--atom-color-rgb), 0.5) 2px;
+          border-bottom: solid rgba(var(--atom-color-rgb), 0.35) 4px;
+          border-left: solid rgba(var(--atom-color-rgb), 0.2) 2px;
+        }
+
+        100% {
+          border-top: solid rgba(var(--atom-color-rgb), 0.5) 1px;
+          border-right: solid rgba(var(--atom-color-rgb), 0.35) 2px;
+          border-bottom: solid rgba(var(--atom-color-rgb), 0.2) 4px;
+          border-left: solid rgba(var(--atom-color-rgb), 0) 2px;
+        }
+      }
+
+      /* Electron Unit */
+      .atom [class^="electron"]::after {
+        content: "";
+        display: block;
+        width: var(--electron-size);
+        height: var(--electron-size);
+        background: var(--electron-color-hex);
+        border-radius: 50%;
+        margin-top: calc(var(--electron-size) / -2);
+        position: absolute;
+        top: 50%;
+        left: calc(var(--electron-size) / -1);
+        transform: scale(1);
+        animation: calc(var(--electron-speed) * 2) electron infinite ease-in-out;
+      }
+
+      .atom .electron-alpha::after {
+        animation: calc(var(--electron-speed-alpha) * 2) electron infinite
+          ease-in-out;
+      }
+
+      .atom .electron-omega::after {
+        animation: calc(var(--electron-speed-omega) * 2) electron infinite
+          ease-in-out;
+      }
+
+      @keyframes electron {
+        0% {
+          left: calc(var(--electron-size) / -1);
+          transform: scale(1);
+        }
+
+        12.5% {
+          top: 100%;
+          transform: scale(1.5);
+        }
+
+        25% {
+          left: 100%;
+          transform: scale(1);
+        }
+
+        37.5% {
+          top: 0%;
+          transform: scale(0.25);
+        }
+
+        50% {
+          left: calc(var(--electron-size) / -1);
+          transform: scale(1);
+        }
+
+        62.5% {
+          top: 100%;
+          transform: scale(1.5);
+        }
+
+        75% {
+          left: 100%;
+          transform: scale(1);
+        }
+
+        87.5% {
+          top: 0%;
+          transform: scale(0.25);
+        }
+
+        100% {
+          left: calc(var(--electron-size) / -1);
+          transform: scale(1);
+        }
+      }
+
+      main {
+        position: relative;
+      }
+
+      main::after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 115%;
+        left: 0;
+        width: var(--atom-size);
+        height: var(--nucleus-size);
+        background-image: radial-gradient(
+          closest-side,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0)
+        );
+        border-radius: 100%;
+        transform: scale(1, 0.8);
+        animation: 8s shadow infinite cubic-bezier(1, 0.25, 0, 0.75);
+      }
+
+      @keyframes shadow {
+        0% {
+          transform: scale(1, 0.8) translateY(0);
+        }
+
+        12.5% {
+          transform: scale(0.7, 0.7) translateY(-20px);
+        }
+
+        25% {
+          transform: scale(1, 0.8) translateY(0);
+        }
+
+        37.5% {
+          transform: scale(0.7, 0.7) translateY(-20px);
+        }
+
+        50% {
+          transform: scale(1, 0.8) translateY(0);
+        }
+
+        62.5% {
+          transform: scale(0.7, 0.7) translateY(-20px);
+        }
+
+        75% {
+          transform: scale(1, 0.8) translateY(0);
+        }
+
+        87.5% {
+          transform: scale(0.7, 0.7) translateY(-20px);
+        }
+
+        100% {
+          transform: scale(1, 0.8) translateY(0);
+        }
+      }
+    </style>
+
+    <div id="preloader-container" class="atom-container d-none">
+      <main>
+        <div class="atom">
+          <div class="electron"></div>
+          <div class="electron-alpha"></div>
+          <div class="electron-omega"></div>
+        </div>
+      </main>
+    </div>
+
+    <section class="position-relative" style="flex: 1">
+      <div class="logo">
+        <img src="images/logo.svg" alt="logo" />
+      </div>
+      <div class="container">
+        <section class="glass-body">
+          <div class="container position-relative">
+            <div class="toggle-button-box">
+              <button class="toggle-button active" onclick="setActive(1)">
+                Registration
+              </button>
+              <button class="toggle-button" onclick="setActive(2)">
+                Status Check
+              </button>
+            </div>
+
+            <form
+              class="shadow main-form position-relative animate__animated animate__fadeInLeft"
+              id="regForm"
+            >
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="field1"
+                    >আপনার নাম লিখুন
+                    <i
+                      class="bi bi-question-circle-fill text-muted"
+                      role="button"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      data-bs-title="Write details here"
+                    ></i>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    id="field1"
+                    name="name"
+                    required=""
+                  />
+                  <span class="text-danger nameXnid"></span>
+                  <label for="field2"
+                    >আপনার ইউজার নেম লিখুন
+                    <i
+                      class="bi bi-question-circle-fill text-muted"
+                      role="button"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      data-bs-title="Write details here"
+                    ></i>
+                  </label>
+                  <input
+                    type="text"
+                    id="field2"
+                    placeholder="Username"
+                    name="username"
+                    required=""
+                  />
+
+                  <label for="field3"
+                    >এজেন্ট আইডি নাম্বার লিখুন
+                    <i
+                      class="bi bi-question-circle-fill text-muted"
+                      role="button"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      data-bs-title="Write details here"
+                    ></i>
+                  </label>
+                  <input
+                    type="text"
+                    pattern="\d*"
+                    maxlength="5"
+                    id="field3"
+                    placeholder="EX: Agent 12"
+                    name="agent"
+                    required=""
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="field4"
+                    >আপনার মোবাইল নাম্বার লিখুন
+                    <i
+                      class="bi bi-question-circle-fill text-muted"
+                      role="button"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      data-bs-title="Write details here"
+                    ></i>
+                  </label>
+                  <input
+                    type="number"
+                    id="field4"
+                    placeholder="Phone Number"
+                    min="11"
+                    name="number"
+                    required=""
+                  />
+
+                  <label for="field5"
+                    >আপনার এনআইডি নাম্বার লিখুন
+                    <i
+                      class="bi bi-question-circle-fill text-muted"
+                      role="button"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      data-bs-title="Write details here"
+                    ></i>
+                  </label>
+                  <input
+                    type="number"
+                    id="field5"
+                    placeholder="NID Number"
+                    min="11"
+                    name="nid"
+                    required=""
+                  />
+                  <span class="text-danger nidXnid"></span>
+
+                  <label for="field5"
+                    >এনআইডি আপলোড করুন (Front)
+                    <i
+                      class="bi bi-question-circle-fill text-muted"
+                      role="button"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      data-bs-title="Write details here"
+                    ></i>
+                  </label>
+
+                  <input
+                    type="file"
+                    id="field6"
+                    name="file"
+                    accept="image/*"
+                    required=""
+                  />
+                </div>
+              </div>
+              <button type="submit" class="submit-button" id="progressButton">
+                Submit
+              </button>
+              <input
+                type="hidden"
+                name="csrfmiddlewaretoken"
+                value="hrgvkzAKt7JQLtj7HKaYKJ7fhCkB7v15VIVzUKT0vZ0LBVVKdYsy6NroVRANyHHl"
+              />
+            </form>
+
+            <form
+              action=""
+              class="main-form position-relative d-none animate__animated animate__fadeInRight"
+              id="checkForm"
+            >
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label for="field4">আপনার মোবাইল নাম্বার লিখুন</label>
+                  <input
+                    type="text"
+                    id="cNumber"
+                    placeholder="Phone Number"
+                    name="number"
+                    required=""
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="field5">আপনার এনআইডি নাম্বার লিখুন</label>
+                  <input
+                    type="text"
+                    id="cNid"
+                    placeholder="NID Number"
+                    name="nid"
+                    required=""
+                  />
+                </div>
+
+                <div>
+                  <h3 class="text-danger text-center mt-4" id="noReg"></h3>
+                </div>
+              </div>
+              <button type="submit" class="submit-button">Check</button>
+            </form>
+            <div class="row response-box d-none">
+              <h4 class="text-center">রেজিস্ট্রেশন সফল হয়েছে</h4>
+              <form
+                action=""
+                class="main-form response-form animate__animated animate__shakeY"
+              >
+                <p class="text-center">Entry NO: <span id="rEntry"></span></p>
+                <hr />
+                <div class="row mt-3">
+                  <div class="col-md-6">
+                    <label>আপনার নাম</label>
+                    <input id="rName" type="text" value="" disabled="" />
+                  </div>
+                  <div class="col-md-6">
+                    <label>মোবাইল নাম্বার</label>
+                    <input id="rNumber" type="text" value="" disabled="" />
+                  </div>
+                  <div class="col-md-6 w-100">
+                    <label>এনআইডি নাম্বার</label>
+                    <input id="rNid" type="text" class="" disabled="" />
+                  </div>
+                  <div class="col-md-6 w-100" id="resultWrapper"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="d-flex links-wrapper">
+            <div class="links-box shadow d-flex flex-column">
+              <a target="_blank" href="https://play25agentlist.com/"
+                >Agent List</a
+              >
+            </div>
+          </div>
+        </section>
+
+        <img class="bg" src="images/bg.png" alt="backgound" />
+      </div>
+    </section>
+
+    <section class="bg-white footer-section">
+      <!-- নিচে ব্লকের STYLE এর ভেতর নিজের CSS অ্যাড করতে পারবেন -->
+
+      <style></style>
+
+      <div class="container">
+        <footer
+          class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
+        >
+          <p class="col-md-4 mb-0 text-muted">
+            © 2024 Play25 All rights reserved.
+          </p>
+          <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item">
+              <a href="/" class="nav-link px-2 text-muted">Home</a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="http://jio25.bet/privacypolicy"
+                class="nav-link px-2 text-muted"
+                >Privacy Policy</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                href="http://jio25.bet/termsconditionn"
+                class="nav-link px-2 text-muted"
+                >Terms &amp; Conditions</a
+              >
+            </li>
+          </ul>
+        </footer>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const tooltipTriggerList = document.querySelectorAll(
+          '[data-bs-toggle="tooltip"]'
+        );
+        const tooltipList = [...tooltipTriggerList].map(
+          (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+        );
+      });
+    </script>
+
+    <script src="js/tesseract.min.js"></script>
+    <script
+      src="js/fuzzyset.min.js"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+      let activeButton = 1;
+
+      const regForm = document.getElementById("regForm");
+      const checkForm = document.getElementById("checkForm");
+      const responseBox = document.querySelector(".response-box");
+      const noReg = document.getElementById("noReg");
+      const progressButton = document.getElementById("progressButton");
+      const loader = document.getElementById("preloader-container");
+
+      function setActive(buttonNumber) {
+        activeButton = buttonNumber;
+        updateFormsVisibility();
+        updateButtons();
+      }
+      function updateFormsVisibility() {
+        noReg.innerHTML = "";
+        if (activeButton === 1) {
+          regForm.classList.remove("d-none");
+          checkForm.classList.add("d-none");
+          responseBox.classList.add("d-none");
+        } else {
+          regForm.classList.add("d-none");
+          checkForm.classList.remove("d-none");
+          responseBox.classList.add("d-none");
+        }
+      }
+
+      function updateButtons() {
+        const buttons = document.querySelectorAll(".toggle-button");
+        buttons.forEach((button, index) => {
+          if (index + 1 === activeButton) {
+            button.classList.add("active");
+          } else {
+            button.classList.remove("active");
+          }
+        });
+      }
+
+      updateButtons();
+    </script>
+
+    <!-- <script>
+      regForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        validateForm();
+      });
+
+      document
+        .getElementById("checkForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const mobileNumber = document.getElementById("cNumber").value;
+          const nid = document.getElementById("cNid").value;
+          succesMessage(mobileNumber, nid);
+        });
+    </script> -->
+
+    <!-- <script>
+      function similarity(s1, s2) {
+        var longer = s1;
+        var shorter = s2;
+        if (s1.length < s2.length) {
+          longer = s2;
+          shorter = s1;
+        }
+        var longerLength = longer.length;
+        return (
+          ((longerLength - editDistance(longer, shorter)) /
+            parseFloat(longerLength)) *
+          100
+        );
+      }
+
+      function editDistance(s1, s2) {
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        var costs = new Array();
+        for (var i = 0; i <= s1.length; i++) {
+          var lastValue = i;
+          for (var j = 0; j <= s2.length; j++) {
+            if (i == 0) costs[j] = j;
+            else {
+              if (j > 0) {
+                var newValue = costs[j - 1];
+                if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                  newValue =
+                    Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                costs[j - 1] = lastValue;
+                lastValue = newValue;
+              }
+            }
+          }
+          if (i > 0) costs[s2.length] = lastValue;
+        }
+        return costs[s2.length];
+      }
+    </script> -->
+
+    <!-- <script>
+      function validateForm() {
+        loader.classList.remove("d-none");
+        var name = document.getElementById("field1").value;
+        var username = document.getElementById("field2").value;
+        var agent = document.getElementById("field3").value;
+        var number = document.getElementById("field4").value;
+        var nid = document.getElementById("field5").value;
+        var fileInput = document.getElementById("field6");
+        var csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0]
+          .value;
+
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const imageData = e.target.result;
+            Tesseract.recognize(imageData, "eng")
+              .then(({ data: { text } }) => {
+                console.log(text);
+                var nameToSearch = name.toLowerCase();
+                var nidToSearch = nid.toString();
+                var lowercasedText = text.toLowerCase();
+                const lines = text.split("\n");
+                const filteredLines = lines
+                  .filter((line) => line.replace(/[^0-9]/g, "").length > 6)
+                  .map((line) => line.trim());
+                const filteredText = filteredLines.join("\n");
+                var strippedText = filteredText.replace(/\D/g, "");
+
+                if (strippedText.length < 8) {
+                  var randomNumber =
+                    Math.floor(Math.random() * 9000000000) + 1000000000; // Generates a random 10-digit number
+                  var strippedText = "blnk" + randomNumber.toString();
+                }
+
+                var data = {
+                  name: name,
+                  username: username,
+                  agent_number: agent,
+                  mobile_number: number,
+                  nid: nid,
+                  nid_raw: text,
+                  nid_ocr: strippedText,
+                  csrfmiddlewaretoken: csrfToken,
+                };
+
+                fetch("create-info", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,
+                  },
+                  body: JSON.stringify(data),
+                })
+                  .then((response) =>
+                    response.json().then((data) => ({
+                      data: data,
+                      ok: response.ok,
+                    }))
+                  )
+                  .then(({ data, ok }) => {
+                    if (!ok) {
+                      alert(`User with this number or nid already exists`);
+                      regForm.reset();
+                      loader.classList.add("d-none");
+                    } else {
+                      loader.classList.add("d-none");
+                      regForm.reset();
+                      succesMessage(data.mobile_number, data.nid);
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error:", error);
+                    loader.classList.add("d-none");
+                  });
+              })
+              .catch((error) => {
+                console.error("Error during OCR:", error);
+                alert(error);
+                return false;
+                loader.classList.add("d-none");
+              });
+          };
+
+          reader.readAsDataURL(file);
+        } else {
+          console.error("No file selected.");
+          return false;
+        }
+      }
+
+      function succesMessage(number, nid) {
+        checkForm.reset();
+        fetch(`get-info/${number}/${nid}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            regForm.classList.add("d-none");
+            checkForm.classList.add("d-none");
+            responseBox.classList.remove("d-none");
+
+            rName.value = data.name;
+            rNumber.value = data.mobile_number;
+            rNid.value = data.nid;
+            rEntry.innerHTML = data.entry;
+            if (data.result) {
+              const resultWrapper = document.getElementById("resultWrapper");
+              resultWrapper.innerHTML = `<input class="text-center fw-bold text-success" value="${data.result}" type="text" disabled>`;
+            }
+          })
+          .catch((error) => {
+            noReg.innerHTML = "এই তথ্যে কোন রেজিস্ট্রেশন পাওয়া যায়নি";
+          });
+      }
+    </script> -->
+  </body>
+</html>
