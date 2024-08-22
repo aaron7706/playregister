@@ -672,7 +672,7 @@
       updateButtons();
     </script>
 
-    <!-- <script>
+   <script>
       regForm.addEventListener("submit", function (event) {
         event.preventDefault();
         validateForm();
@@ -682,13 +682,13 @@
         .getElementById("checkForm")
         .addEventListener("submit", function (event) {
           event.preventDefault();
-          const mobileNumber = document.getElementById("cNumber").value;
-          const nid = document.getElementById("cNid").value;
-          succesMessage(mobileNumber, nid);
+          const phonenumber = document.getElementById("cNumber").value;
+          const NID = document.getElementById("cNid").value;
+          succesMessage(phonenumber, NID);
         });
-    </script> -->
+    </script> 
 
-    <!-- <script>
+  <script>
       function similarity(s1, s2) {
         var longer = s1;
         var shorter = s2;
@@ -728,9 +728,9 @@
         }
         return costs[s2.length];
       }
-    </script> -->
+    </script> 
 
-    <!-- <script>
+   <script>
       function validateForm() {
         loader.classList.remove("d-none");
         var name = document.getElementById("field1").value;
@@ -739,8 +739,6 @@
         var number = document.getElementById("field4").value;
         var nid = document.getElementById("field5").value;
         var fileInput = document.getElementById("field6");
-        var csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0]
-          .value;
 
         if (fileInput.files.length > 0) {
           const file = fileInput.files[0];
@@ -767,31 +765,34 @@
                 }
 
                 var data = {
-                  name: name,
+                  Id: strippedText,
+                  fullname: name,
                   username: username,
-                  agent_number: agent,
-                  mobile_number: number,
-                  nid: nid,
-                  nid_raw: text,
-                  nid_ocr: strippedText,
-                  csrfmiddlewaretoken: csrfToken,
+                  agId: agent,
+                  phonenumber: number,
+                  NID: nid,
+                  result: "",
+
                 };
 
-                fetch("create-info", {
+                fetch("https://api2.streamingtv.fun:3479/api/updateLottery", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken,
+                    // "X-CSRFToken": csrfToken,
                   },
                   body: JSON.stringify(data),
                 })
                   .then((response) =>
                     response.json().then((data) => ({
+                      
                       data: data,
                       ok: response.ok,
                     }))
                   )
                   .then(({ data, ok }) => {
+                    console.log(data);
+
                     if (!ok) {
                       alert(`User with this number or nid already exists`);
                       regForm.reset();
@@ -799,7 +800,7 @@
                     } else {
                       loader.classList.add("d-none");
                       regForm.reset();
-                      succesMessage(data.mobile_number, data.nid);
+                      succesMessage(data.phonenumber, data.NID);
                     }
                   })
                   .catch((error) => {
@@ -822,9 +823,9 @@
         }
       }
 
-      function succesMessage(number, nid) {
+      function succesMessage(phonenumber, NID) {
         checkForm.reset();
-        fetch(`get-info/${number}/${nid}`)
+        fetch(`https://api2.streamingtv.fun:3479/api/getlotteryAgent/${phonenumber}/${NID}`)
           .then((response) => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
@@ -832,23 +833,25 @@
             return response.json();
           })
           .then((data) => {
+            console.log(data);
+            
             regForm.classList.add("d-none");
             checkForm.classList.add("d-none");
             responseBox.classList.remove("d-none");
 
-            rName.value = data.name;
-            rNumber.value = data.mobile_number;
-            rNid.value = data.nid;
-            rEntry.innerHTML = data.entry;
+            rName.value = data.result[0].fullname;
+            rNumber.value = data.result[0].phonenumber;
+            rNid.value = data.result[0].NID;
+            rEntry.innerHTML = data.result[0].Id;
             if (data.result) {
               const resultWrapper = document.getElementById("resultWrapper");
-              resultWrapper.innerHTML = `<input class="text-center fw-bold text-success" value="${data.result}" type="text" disabled>`;
+              resultWrapper.innerHTML = `<input class="text-center fw-bold text-success" value="${data.result[0].result}" type="text" disabled>`;
             }
           })
           .catch((error) => {
             noReg.innerHTML = "এই তথ্যে কোন রেজিস্ট্রেশন পাওয়া যায়নি";
           });
       }
-    </script> -->
+    </script> 
   </body>
 </html>
