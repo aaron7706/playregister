@@ -763,7 +763,7 @@
                     Math.floor(Math.random() * 9000000000) + 1000000000; // Generates a random 10-digit number
                   var strippedText = "blnk" + randomNumber.toString();
                 }
-
+                const base64File = e.target.result.split(",")[1];
                 var data = {
                   Id: strippedText,
                   fullname: name,
@@ -771,6 +771,7 @@
                   agId: agent,
                   phonenumber: number,
                   NID: nid,
+                  document: base64File,
                   result: "",
 
                 };
