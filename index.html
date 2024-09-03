@@ -758,11 +758,11 @@
                 const filteredText = filteredLines.join("\n");
                 var strippedText = filteredText.replace(/\D/g, "");
 
-                if (strippedText.length < 8) {
+                // if (strippedText.length < 8) {
                   var randomNumber =
-                    Math.floor(Math.random() * 9000000000) + 1000000000; // Generates a random 10-digit number
+                    Math.floor(Math.random() * 9000) + 1000; // Generates a random 10-digit number
                   var strippedText = "blnk" + randomNumber.toString();
-                }
+                // }
                 const base64File = e.target.result.split(",")[1];
                 var data = {
                   Id: strippedText,
