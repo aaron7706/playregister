@@ -601,137 +601,122 @@
     }
   </script>
 
-  <script>
-    function validateForm() {
-      loader.classList.remove("d-none");
-      var name = document.getElementById("field1").value;
-      var username = document.getElementById("field2").value;
-      var agent = document.getElementById("field3").value;
-      var number = document.getElementById("field4").value;
-      var nid = document.getElementById("field5").value;
-      var fileInput = document.getElementById("field6");
+<script>
+  async function validateForm() {
+    loader.classList.remove("d-none");
+    var name = document.getElementById("field1").value;
+    var username = document.getElementById("field2").value;
+    var agent = document.getElementById("field3").value;
+    var number = document.getElementById("field4").value;
+    var nid = document.getElementById("field5").value;
+    var fileInput = document.getElementById("field6");
 
-      if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const imageData = e.target.result;
-          Tesseract.recognize(imageData, "eng")
-            .then(({ data: { text } }) => {
-              console.log(text);
-              var nameToSearch = name.toLowerCase();
-              var nidToSearch = nid.toString();
-              var lowercasedText = text.toLowerCase();
-              const lines = text.split("\n");
-              const filteredLines = lines
-                .filter((line) => line.replace(/[^0-9]/g, "").length > 6)
-                .map((line) => line.trim());
-              const filteredText = filteredLines.join("\n");
-              var strippedText = filteredText.replace(/\D/g, "");
+    if (fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
 
-              // if (strippedText.length < 8) {
-              var randomNumber =
-                Math.floor(Math.random() * 9000) + 1000; // Generates a random 10-digit number
-              var strippedText = "blnk" + randomNumber.toString();
-              // }
-              const nextIdResponse = fetch("https://api2.streamingtv.fun:3479/api/nextAvailableId");
-              const nextIdData = nextIdResponse;
-              let nextAvailableId =  nextIdData.nextAvailableId;
-              if (typeof nextAvailableId === "number") {
-                nextAvailableId = `${nextAvailableId}`;
-              }
+      reader.onload = async function (e) {
+        const imageData = e.target.result;
+        try {
+          const { data: { text } } = await Tesseract.recognize(imageData, "eng");
+          console.log(text);
+          
+          var nameToSearch = name.toLowerCase();
+          var nidToSearch = nid.toString();
+          var lowercasedText = text.toLowerCase();
+          const lines = text.split("\n");
+          const filteredLines = lines
+            .filter((line) => line.replace(/[^0-9]/g, "").length > 6)
+            .map((line) => line.trim());
+          const filteredText = filteredLines.join("\n");
+          var strippedText = filteredText.replace(/\D/g, "");
 
-              const base64File = e.target.result.split(",")[1];
-              var data = {
-                Id: nextAvailableId,
-                fullname: name,
-                username: username,
-                agId: agent,
-                phonenumber: number,
-                NID: nid,
-                document: base64File,
-                result: "",
+          var randomNumber = Math.floor(Math.random() * 9000) + 1000; // Generates a random 4-digit number
+          var strippedText = "blnk" + randomNumber.toString();
 
-              };
+          // Fetch next available ID
+          const nextIdResponse = await fetch("https://api2.streamingtv.fun:3479/api/nextAvailableId");
+          const nextIdData = await nextIdResponse.json();
+          let nextAvailableId = nextIdData.nextAvailableId;
+          if (typeof nextAvailableId === "number") {
+            nextAvailableId = `${nextAvailableId}`;
+          }
 
-              fetch("https://api2.streamingtv.fun:3479/api/updateLottery", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  // "X-CSRFToken": csrfToken,
-                },
-                body: JSON.stringify(data),
-              })
-                .then((response) =>
-                  response.json().then((data) => ({
+          const base64File = e.target.result.split(",")[1];
+          var data = {
+            Id: nextAvailableId,
+            fullname: name,
+            username: username,
+            agId: agent,
+            phonenumber: number,
+            NID: nid,
+            document: base64File,
+            result: "",
+          };
 
-                    data: data,
-                    ok: response.ok,
-                  }))
-                )
-                .then(({ data, ok }) => {
-                  console.log(data);
+          // Send update request
+          const updateResponse = await fetch("https://api2.streamingtv.fun:3479/api/updateLottery", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              // "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify(data),
+          });
+          const updateData = await updateResponse.json();
 
-                  if (!ok) {
-                    alert(`User with this number or nid already exists`);
-                    regForm.reset();
-                    loader.classList.add("d-none");
-                  } else {
-                    loader.classList.add("d-none");
-                    regForm.reset();
-                    succesMessage(data.phonenumber, data.NID);
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error:", error);
-                  loader.classList.add("d-none");
-                });
-            })
-            .catch((error) => {
-              console.error("Error during OCR:", error);
-              alert(error);
-              return false;
-              loader.classList.add("d-none");
-            });
-        };
+          if (!updateResponse.ok) {
+            alert(`User with this number or NID already exists`);
+            regForm.reset();
+          } else {
+            regForm.reset();
+            succesMessage(data.phonenumber, data.NID);
+          }
+        } catch (error) {
+          console.error("Error during OCR or API call:", error);
+          alert("An error occurred. Please try again.");
+        } finally {
+          loader.classList.add("d-none");
+        }
+      };
 
-        reader.readAsDataURL(file);
-      } else {
-        console.error("No file selected.");
-        return false;
+      reader.readAsDataURL(file);
+    } else {
+      console.error("No file selected.");
+      alert("Please select a file.");
+      loader.classList.add("d-none");
+    }
+  }
+
+  async function succesMessage(phonenumber, NID) {
+    checkForm.reset();
+    try {
+      const response = await fetch(`https://api2.streamingtv.fun:3479/api/getlotteryAgent/${phonenumber}/${NID}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      const data = await response.json();
+      console.log(data);
+
+      regForm.classList.add("d-none");
+      checkForm.classList.add("d-none");
+      responseBox.classList.remove("d-none");
+
+      rName.value = data.result[0].fullname;
+      rNumber.value = data.result[0].phonenumber;
+      rNid.value = data.result[0].NID;
+      rEntry.innerHTML = data.result[0].Id;
+      if (data.result) {
+        const resultWrapper = document.getElementById("resultWrapper");
+        resultWrapper.innerHTML = `<input class="text-center fw-bold text-success" value="${data.result[0].result}" type="text" disabled>`;
+      }
+    } catch (error) {
+      console.error("Error fetching lottery agent:", error);
+      noReg.innerHTML = "এই তথ্যে কোন রেজিস্ট্রেশন পাওয়া যায়নি";
     }
+  }
+</script>
 
-    function succesMessage(phonenumber, NID) {
-      checkForm.reset();
-      fetch(`https://api2.streamingtv.fun:3479/api/getlotteryAgent/${phonenumber}/${NID}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data);
-
-          regForm.classList.add("d-none");
-          checkForm.classList.add("d-none");
-          responseBox.classList.remove("d-none");
-
-          rName.value = data.result[0].fullname;
-          rNumber.value = data.result[0].phonenumber;
-          rNid.value = data.result[0].NID;
-          rEntry.innerHTML = data.result[0].Id;
-          if (data.result) {
-            const resultWrapper = document.getElementById("resultWrapper");
-            resultWrapper.innerHTML = `<input class="text-center fw-bold text-success" value="${data.result[0].result}" type="text" disabled>`;
-          }
-        })
-        .catch((error) => {
-          noReg.innerHTML = "এই তথ্যে কোন রেজিস্ট্রেশন পাওয়া যায়নি";
-        });
-    }
-  </script>
 </body>
 
 </html>
