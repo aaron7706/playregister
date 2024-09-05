@@ -602,22 +602,7 @@
   </script>
 
   <script>
-    async function fetchNextAvailableId() {
-      try {
-        const nextIdResponse = await fetch("https://api2.streamingtv.fun:3479/api/nextAvailableId");
-        if (!nextIdResponse.ok) {
-          console.error(`API Error: ${nextIdResponse.status} - ${nextIdResponse.statusText}`);
-          return null;
-        }
-        const nextIdData = await nextIdResponse.json();
-        return nextIdData.nextAvailableId;
-      } catch (error) {
-        console.error("Error during API call:", error);
-        return null;
-      }
-    }
-
-    async function validateForm() {
+    function validateForm() {
       loader.classList.remove("d-none");
       var name = document.getElementById("field1").value;
       var username = document.getElementById("field2").value;
@@ -626,36 +611,37 @@
       var nid = document.getElementById("field5").value;
       var fileInput = document.getElementById("field6");
 
-      // Fetch next available ID
-      const nextAvailableId = await fetchNextAvailableId();
-      if (!nextAvailableId) {
-        console.error("Error: Next available ID is null or undefined");
-        loader.classList.add("d-none");
-        return;
-      }
-
       if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
         const reader = new FileReader();
-        reader.onload = async function (fileEvent) {
-          const imageData = fileEvent.target.result;
+        reader.onload = function (e) {
+          const imageData = e.target.result;
           Tesseract.recognize(imageData, "eng")
-            .then(async ({ data: { text } }) => {
+            .then(({ data: { text } }) => {
               console.log(text);
+              var nameToSearch = name.toLowerCase();
+              var nidToSearch = nid.toString();
+              var lowercasedText = text.toLowerCase();
               const lines = text.split("\n");
               const filteredLines = lines
                 .filter((line) => line.replace(/[^0-9]/g, "").length > 6)
                 .map((line) => line.trim());
               const filteredText = filteredLines.join("\n");
-              let strippedText = filteredText.replace(/\D/g, "");
+              var strippedText = filteredText.replace(/\D/g, "");
 
-              // Optional: Fallback random ID
-              if (strippedText.length < 8) {
-                var randomNumber = Math.floor(Math.random() * 9000) + 1000;
-                strippedText = "blnk" + randomNumber.toString();
+              // if (strippedText.length < 8) {
+              var randomNumber =
+                Math.floor(Math.random() * 9000) + 1000; // Generates a random 10-digit number
+              var strippedText = "blnk" + randomNumber.toString();
+              // }
+              const nextIdResponse = fetch("https://api2.streamingtv.fun:3479/api/nextAvailableId");
+              const nextIdData = nextIdResponse;
+              let nextAvailableId =  nextIdData.nextAvailableId;
+              if (typeof nextAvailableId === "number") {
+                nextAvailableId = `${nextAvailableId}`;
               }
 
-              const base64File = fileEvent.target.result.split(",")[1];
+              const base64File = e.target.result.split(",")[1];
               var data = {
                 Id: nextAvailableId,
                 fullname: name,
@@ -665,17 +651,20 @@
                 NID: nid,
                 document: base64File,
                 result: "",
+
               };
 
               fetch("https://api2.streamingtv.fun:3479/api/updateLottery", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
+                  // "X-CSRFToken": csrfToken,
                 },
                 body: JSON.stringify(data),
               })
                 .then((response) =>
                   response.json().then((data) => ({
+
                     data: data,
                     ok: response.ok,
                   }))
@@ -684,7 +673,7 @@
                   console.log(data);
 
                   if (!ok) {
-                    alert(`User with this number or NID already exists`);
+                    alert(`User with this number or nid already exists`);
                     regForm.reset();
                     loader.classList.add("d-none");
                   } else {
@@ -701,6 +690,7 @@
             .catch((error) => {
               console.error("Error during OCR:", error);
               alert(error);
+              return false;
               loader.classList.add("d-none");
             });
         };
@@ -708,7 +698,6 @@
         reader.readAsDataURL(file);
       } else {
         console.error("No file selected.");
-        loader.classList.add("d-none");
         return false;
       }
     }
@@ -733,7 +722,6 @@
           rNumber.value = data.result[0].phonenumber;
           rNid.value = data.result[0].NID;
           rEntry.innerHTML = data.result[0].Id;
-
           if (data.result) {
             const resultWrapper = document.getElementById("resultWrapper");
             resultWrapper.innerHTML = `<input class="text-center fw-bold text-success" value="${data.result[0].result}" type="text" disabled>`;
@@ -744,8 +732,6 @@
         });
     }
   </script>
-
-
 </body>
 
 </html>
