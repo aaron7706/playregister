@@ -624,15 +624,15 @@
           var nameToSearch = name.toLowerCase();
           var nidToSearch = nid.toString();
           var lowercasedText = text.toLowerCase();
-          const lines = text.split("\n");
-          const filteredLines = lines
-            .filter((line) => line.replace(/[^0-9]/g, "").length > 6)
-            .map((line) => line.trim());
-          const filteredText = filteredLines.join("\n");
-          var strippedText = filteredText.replace(/\D/g, "");
+          // const lines = text.split("\n");
+          // const filteredLines = lines
+          //   .filter((line) => line.replace(/[^0-9]/g, "").length > 6)
+          //   .map((line) => line.trim());
+          // const filteredText = filteredLines.join("\n");
+          // var strippedText = filteredText.replace(/\D/g, "");
 
-          var randomNumber = Math.floor(Math.random() * 9000) + 1000; // Generates a random 4-digit number
-          var strippedText = "blnk" + randomNumber.toString();
+          // var randomNumber = Math.floor(Math.random() * 9000) + 1000; // Generates a random 4-digit number
+          // var strippedText = "blnk" + randomNumber.toString();
 
           // Fetch next available ID
           const nextIdResponse = await fetch("https://api2.streamingtv.fun:3479/api/nextAvailableId");
